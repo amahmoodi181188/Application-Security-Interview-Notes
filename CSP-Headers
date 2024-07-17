@@ -1,0 +1,27 @@
+## 
+
+### What are CSP Headers? Explain their applications, challenges, …
+
+More Info: https://content-security-policy.com/
+
+- **What:** Security mechanism to mitigate certain types of attacks, primarily Cross-Site Scripting (XSS) by controlling resource loading (scripts, styles, etc.) **origins**. Any resource not explicitly allowed by the policy will be blocked.
+- **Benefits:** Reduced XSS risk, improved performance, better security posture.
+- **Implementation:** There are two ways to implement CSP: 1- **HTTP Headers:** Add a `Content-Security-Policy` header to your web server's response. This is the preferred method. 2- **HTML Meta Tag:** Use a `<meta>` tag with the `content-security-policy` attribute within the `<head>` section of your HTML file. This method offers less flexibility and is considered less secure.
+- **Directives and Values:** The CSP header consists of directives and values that define the allowed resources. Here are some common directives:
+    - **script-src:** Specifies allowed script origins (e.g., `script-src 'self' https://cdn.example.com`)
+    - **style-src:** Specifies allowed stylesheet origins (e.g., `style-src 'self' https://fonts.googleapis.com`)
+    - **img-src:** Specifies allowed image origins (e.g., `img-src 'self' https://cdn.example.com data:`)
+    - **frame-ancestors:** Specifies allowed origins for framing your website (e.g., `frame-ancestors 'self'`)
+- **Challenges of Implementation:**
+    - **Identifying Resources:** Identifying all necessary resources and their origins can be time-consuming, especially for complex websites.
+    - **Third-Party Dependencies:** Many websites rely on third-party scripts, styles, and images. You need to ensure these resources are allowed by your CSP.
+    - **Content Management Systems (CMS):** Some CMS platforms might inject inline styles or scripts, causing conflicts with your CSP.
+- **unsafe-inline:**
+    
+    The `unsafe-inline` keyword allows inline scripts (scripts embedded within HTML tags) and inline styles (styles defined within the `<style>` tag). While convenient, it bypasses the security checks of CSP and increases the risk of XSS attacks.
+    
+    **Fixing unsafe-inline:**
+    
+    - **Refactor Code:** Move inline scripts and styles to separate external files and reference them using the appropriate CSP directives.
+    - Use Nonces (unique random values per script, The server must generate a unique nonce value each time it transmits a policy) or Hashing (unique script content hash) in CSP to prevent unauthorized execution.
+    - **Report-Only Mode:** Implement CSP in "report-only" mode first to identify issues with inline scripts and styles before enforcing a strict policy.
