@@ -21,6 +21,8 @@ Threat modeling is a structured process used to identify, assess, and address po
 4. **OCTAVE (Operationally Critical Threat, Asset, and Vulnerability Evaluation)**
 5. **Trike**
 
+Note: For doing a successful threat modeling we first need a visual diagram from our application or service. AFAIK there are two approaches: 1- DFD (Data Flow Diagram) 2- PFD (Process Flow Diagram) we probably PD team can help to have it!
+
 ### STRIDE: Detailed Explanation
 
 **STRIDE** is a threat modeling framework developed by Microsoft to help identify and categorize threats. It is an acronym for the following six types of security threats:
