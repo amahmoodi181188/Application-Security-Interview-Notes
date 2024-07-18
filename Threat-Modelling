@@ -1,0 +1,57 @@
+### An Overview
+
+Threat modeling is a structured process used to identify, assess, and address potential security threats to a system. The goal is to understand the security risks to the system, prioritize those risks, and develop mitigation strategies to reduce or eliminate them.
+
+### Importance of Threat Modeling
+
+- **Proactive Security**: Identifies potential threats early in the development process.
+- **Resource Allocation**: Helps prioritize security efforts based on risk.
+- **Improves Communication**: Facilitates better communication about security risks among stakeholders.
+- **Compliance**: Assists in meeting regulatory and compliance requirements.
+
+### Methodologies for Threat Modeling
+
+1. **STRIDE**
+    - **Description**: STRIDE is a mnemonic for six types of security threats: **Spoofing**, **Tampering**, **Repudiation**, **Information Disclosure**, **Denial of Service**, and **Elevation of Privilege**.
+    - **Usage**: It's commonly used for identifying potential threats in a system by examining how each of these threats could manifest. Its categorised as a defensive type of Threat Modelling models!
+2. **DREAD**
+    - **Description**: DREAD is a risk assessment model that stands for **Damage potential**, **Reproducibility**, **Exploitability**, **Affected users**, and **Discoverability**.
+    - **Usage**: Used to rate, compare, and prioritize the severity of different threats.
+3. **PASTA (Process for Attack Simulation and Threat Analysis)**
+4. **OCTAVE (Operationally Critical Threat, Asset, and Vulnerability Evaluation)**
+5. **Trike**
+
+### STRIDE: Detailed Explanation
+
+**STRIDE** is a threat modeling framework developed by Microsoft to help identify and categorize threats. It is an acronym for the following six types of security threats:
+
+1. **Spoofing**:
+    - **Description**: Impersonating something or someone else.
+    - **Example**: An attacker pretends to be a legitimate user to gain unauthorized access.
+2. **Tampering**:
+    - **Description**: Modifying data or code.
+    - **Example**: An attacker alters a file on disk or changes data in transit over a network.
+3. **Repudiation**:
+    - **Description**: Claiming not to have performed an action.
+    - **Example**: A user denies making a purchase, and there are no logs to prove otherwise.
+4. **Information Disclosure**:
+    - **Description**: Exposing information to unauthorized entities.
+    - **Example**: Sensitive data such as credit card numbers are exposed through improper access control.
+5. **Denial of Service (DoS)**:
+    - **Description**: Making a system unavailable to its intended users.
+    - **Example**: An attacker overwhelms a server with requests, causing it to crash or become unresponsive.
+6. **Elevation of Privilege**:
+    - **Description**: Gaining higher privileges than permitted.
+    - **Example**: An attacker exploits a vulnerability to gain admin rights on a system.
+
+### Tools for STRIDE
+
+1. **Microsoft Threat Modeling Tool**
+2. **OWASP Threat Dragon**:
+    - **Description**: An open-source threat modeling tool from the Open Web Application Security Project (OWASP).
+    - **Features**: Easy-to-use interface, support for STRIDE and other threat modeling methodologies, and integration with GitHub for collaborative modeling.
+3. **ThreatModeler**:
+    - **Description**: An enterprise-level automated threat modeling solution.
+    - **Features**: Supports STRIDE, integrates with CI/CD pipelines, and provides real-time threat intelligence.
+
+For more detailed information, you can refer to the OWASP Threat Modeling resources and Microsoft's [Threat Modeling Tool](https://docs.microsoft.com/en-us/azure/security/develop/threat-modeling-tool).
