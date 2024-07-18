@@ -12,9 +12,10 @@ I hope these notes will be helpful for anyone preparing for AppSec interviews. Y
 **Contact**
 If you have any feedback or questions, feel free to reach out to me on LinkedIn or via email at amahmoodi181188@gmail.com.
 
-**List of Contents**:
-- what are **Cookies** and differences, their applications, ...: https://github.com/amahmoodi181188/Application-Security-Interview-Notes/blob/main/Cookies
-- what are **CSP Headers** and other related data you need to know: https://github.com/amahmoodi181188/Application-Security-Interview-Notes/blob/main/CSP-Headers
-- Questions about Threat Moddeling like what is it, different types, definitions, tools, ... : https://github.com/amahmoodi181188/Application-Security-Interview-Notes/blob/main/Threat-Modelling
+**List of Contents**
+You are probabely will be asked about these topics like what are these, definition, types, tools, ... which I bring all related data in each section:
+- **Cookies**: https://github.com/amahmoodi181188/Application-Security-Interview-Notes/blob/main/Cookies
+- **CSP Headers**: https://github.com/amahmoodi181188/Application-Security-Interview-Notes/blob/main/CSP-Headers
+- **Threat Moddeling**: https://github.com/amahmoodi181188/Application-Security-Interview-Notes/blob/main/Threat-Modelling
 
 Thank you!
