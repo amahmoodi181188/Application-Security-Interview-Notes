@@ -1,0 +1,98 @@
+## CooKies
+
+Cookies or, to give them their formal name, HTTP cookies, are text files made up of tiny bits of data, which are stored on a web browser. These tiny bits of data are used by websites to track a user’s journey, enabling them to offer features that are specific to each individual user. Because of this, cookies are at the heart of a website’s functionality. For example, they can be used for shopping carts on e-commerce sites. Cookies exist because the underlying HTTP protocol is stateless—each request from your browser is completely separate from the next one, so the server needs a way to keep track of what request belongs to what visitor. By storing a small bit of information in a cookie, the web site can determine that your page view belongs to your user account.
+
+### Different Types of Cookies
+
+There are a number of different ways cookies can be grouped together, and below we’ll look at the four most common. This should hopefully add to your understanding of how they are used as well as how they work.
+
+**1-Session Cookies**
+
+**These cookies are temporary** and will only be **stored in the memory of your browser while it’s open**. When it’s closed, the cookie will be removed from your browser’s history, and, because of this, they are a lower security risk. You’ll often find these cookies working within e-commerce shopping carts, controlling what a user sees on a page when they’re conducting a one-off, multi-page site visit, or for other storage means that are short-term.
+
+**2-Persistent Cookies**
+
+**These cookies are used over a much longer period of time, as an expiration date is tagged to them by the issuer**. This means, even when your browser is closed, the cookie will be stored on it. And each time you return to the website that created this cookie, or you go to a website that has a resource produced by the cookie’s issuer (eg, an ad), this data is returned to the issuer.
+
+Persistent cookies, can, therefore, track your browsing activity not just on the original site where the cookie was created but on other sites that have a resource which has been produced by the original site. For example, Facebook and Google use these kinds of mechanisms to create a user activity log across a range of different websites. So, when you click “Remember Me” (or something similar) after you’ve logged into your online account somewhere, you’ll be creating a persistent cookie, which will store your login details on your browser. As these persistent cookies are present for a longer period than session cookies, and can essentially track what you’re doing over more than one site, a greater security risk is posed by them.
+
+Persistent cookies are used for two primary purposes:
+
+1. **Authentication**. These	cookies track whether a user is logged in and under what name. They also streamline login information, so users don't have to remember	site passwords.
+2. **Tracking**. These cookies track multiple visits to the same site over time. Some online merchants, for example, use cookies to track visits from particular users, including the pages and products viewed. The information they gain allows them to suggest other items that might interest visitors. Gradually, a profile is built based on a user's	browsing history on that site.
+
+**3-First-Party Cookies**
+
+Created by a site you’re visiting, first-party cookies help a website carry out a number of purposes, such as allowing you to add more than one item to your online order. If you disabled first-party cookies, every time you added an item to your shopping cart it would be treated as a new order as you’d be unable to purchase more than one item in one transaction.
+
+**4-Third-Party Cookies**
+
+Created by a site you’re not currently visiting, third-party cookies are most commonly used to track a user who’s clicked on an ad, associating them with the domain that’s referred them. For example, if you’re on a website and you click on an advertisement, a third-party cookie is generated to associate your traffic with the website where the advertisement was shown. Even though cookies do play a very important role in our browsing activities, there are a number of threats posed by these, especially when it comes to the invasion of privacy and the security of websites that are using them.
+
+**Zombie cookies** are from a third-party and permanently installed on users' computers, even when they opt not to install cookies. They also reappear after they've been deleted. When zombie cookies first appeared, they were created from data stored in the [Adobe Flash storage bin](https://www.techopedia.com/definition/25736/zombie-cookie). They are sometimes called “**flash cookies**” and are extremely difficult to remove. Like other third-party cookies, zombie cookies can be used by web analytics companies to track unique individuals' browsing histories. Websites may also use zombies to ban specific users.
+
+**Implementing Cookies on a Technical Level**
+
+**A cookie is created when a browser is told to create one by a web server.**
+These instructions are normally sent in a HTTP header, looking a bit like this:
+
+**Set-Cookie: <cookie_name>=<cookie_value>**
+
+The ***document.cookie*** method through client-side JavaScript can also be used to create
+cookies.
+
+document.cookie='dark_mode=true'
+
+Then, once a browser has created a cookie, when any requests are made by the browser for the same domain, any cookies that belong to this domain will be sent back as part of the request.
+
+In the example above, you’ll find a “session cookie.” But you can create persistent cookies by adding the attribute “Expires” into the Set-Cookie header. You may also want to add a number of other attributes which will help you to control how cookies are treated by
+browsers. These include:
+
+- A “**Secure**” attribute: this tag for cookies will only be sent if **the browser’s request** is sent through **an encrypted protocol** (https). Just remember that the Secure attribute doesn't actually encrypt any data in your cookie – **it just ensures that the cookie can't be sent over an HTTP connection**.
+
+However, a bad actor could still possibly intercept and manipulate the cookie. To prevent this from happening, you can also use the **HttpOnly** parameter:
+
+document.cookie='dark_mode=false; Secure; HttpOnly';
+
+- A “**HttpOnly**” attribute: when a cookie is flagged with this attribute, **it	won’t be accessible to JavaScript in the webpage’s Document	Object Model (DOM)**,	and will only be transmitted back to the domain that issued it. So	Cookies with HttpOnly can only be accessed by the server,	and not by the browser's Document.cookie API. This is	perfect for things like a login session, where only the server	really needs to know if you're signed into a site, and you don't	need that information client side.
+- A	“**SameSite**”	attribute: this attribute makes sure **cookies	are only transmitted back to their originating website**.	The use of these cookies is relatively new.
+
+As for cookies, one way to prevent possible CSRF attacks is with the SameSite flag:
+
+document.cookie='dark_mode=false; Secure; HttpOnly; SameSite=Strict';
+
+There are a few values you can set for SameSite:
+
+**Lax**:
+
+- With	SameSite=Lax, the cookie is still sent with same-site requests	(requests originating from the same site/domain), including	top-level navigation, form submissions, and same-site AJAX requests.
+- However,	for cross-site requests (requests originating from a different	site/domain), the cookie is not sent, **except	for "safe" HTTP methods,** such	as	**`GET, HEAD, and OPTIONS`,** that	do not have side effects.
+
+**Strict**:
+With SameSite=Strict, the cookie is only sent with same-site requests and is not sent with any cross-site requests regardless of the HTTP method used. It provides the highest level of protection against CSRF attacks.
+
+**None**:
+Cookies will be sent with every request, regardless of context. If you set SameSite to None, you must also add the Secure attribute. It's better to avoid this value if possible
+
+### Cookie limitations
+
+Cookies are quite limited compared to some modern alternatives to storing data in the browser like ***localStorage*** or ***sessionStorage***. Here's a rundown of cookies compared to those other technologies:
+
+|  | COOKIES | LOCAL STORAGE | SESSION STORAGE |
+| --- | --- | --- | --- |
+| Capacity | 4KB | 10MB | 5MB |
+| Accessible (from) | Any window | Any window | Same tab |
+| Expires | Manually set | Never | On tab close |
+| Storage location | Browser and server | Browser only | Browser only |
+| Sent with requests | Yes | No | No				 |
+
+It's also worth mentioning that browsers only allow cookies to work from one domain for security reasons. So if you sign in to your bank at, say, ally.com, then cookies will only work within that domain and its subdomains. For example, your ally.com cookie will work  on ally.com, ally.com/about, and the subdomain www.ally.com, but not axos.com.
+
+This means that, even if you have accounts and are signed in at both ally.com and axos.com,
+those sites won't be able to read each other's cookies. It's important to remember that your cookies are sent with every request you make in the browser. This is very convenient, but has some serious security implications we'll get into later. If expiration date is set to Session,
+that means the cookie will be destroyed when you close your tab /browser. But ***if you want your cookie to last longer, you'll need to set an expiration date.***
+
+document.cookie='dark_mode=true; expires=Fri, 26 Feb 2021 00:00:00 GMT'//expires 1 week from now
+
+Sometimes you'll **only want your cookie to work with certain parts of your website**.
+Depending on how your website is set up, one way to do this is with the **path attribute**.
