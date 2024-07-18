@@ -12,4 +12,9 @@ I hope these notes will be helpful for anyone preparing for AppSec interviews. Y
 Contact
 If you have any feedback or questions, feel free to reach out to me on LinkedIn or via email at amahmoodi181188@gmail.com.
 
+List of Contents:
+- what are **Cookies** and differences, their applications, ...: https://github.com/amahmoodi181188/Application-Security-Interview-Notes/blob/main/Cookies
+- what are **CSP Headers** and other related data you need to know: https://github.com/amahmoodi181188/Application-Security-Interview-Notes/blob/main/CSP-Headers
+- 
+
 Thank you!
