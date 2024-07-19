@@ -18,5 +18,7 @@ You are probabely will be asked about these topics like what are these, definiti
 - **CSP Headers**: https://github.com/amahmoodi181188/Application-Security-Interview-Notes/blob/main/CSP-Headers
 - **Threat Moddeling**: https://github.com/amahmoodi181188/Application-Security-Interview-Notes/blob/main/Threat-Modelling
 - **Network Based Questions**: https://github.com/amahmoodi181188/Application-Security-Interview-Notes/blob/main/Network-Based-Questions
+- **Definition Of Important Vulnerabilities**: https://github.com/amahmoodi181188/Application-Security-Interview-Notes/blob/main/Important-Vulnerabilities
+- **Definition of Important Attacks**: 
 
 Thank you!
