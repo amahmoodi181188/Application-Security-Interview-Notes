@@ -1,0 +1,329 @@
+If I haven’t explicitly mentioned the Ref for any of these topics, It means I asked ChatGPT about it or write it by myself.
+
+### What is Session hijacking?
+
+Session hijacking is a type of cyber attack where an attacker takes over a valid session between a user and a web application. This allows the attacker to impersonate the user and potentially gain unauthorized access to the application or sensitive information.
+
+**How it happens:**
+
+Session hijacking can occur through various methods:
+
+1. **Packet Sniffing**: Monitoring network traffic to capture session cookies or other session identifiers transmitted over insecure channels (like HTTP).
+2. **Session Fixation**: Forcing a user's session ID to a known value, allowing the attacker to predict and hijack the session.
+3. **Cross-site Scripting (XSS)**: Exploiting vulnerabilities in web applications to inject malicious scripts that can steal session cookies or perform actions on behalf of the user.
+4. **IP Spoofing and Session Hijacking**: IP spoofing involves forging the source IP address of packets to make it appear as though they originate from a trusted entity or another specific IP address. This technique can be employed by attackers to intercept and manipulate traffic between a user and a web application, thereby facilitating session hijacking.
+
+**Mitigation strategies:**
+
+As a security engineer, here are key measures to mitigate session hijacking:
+
+1. **Use of HTTPS**: Encrypt all sensitive communications between the client and server to prevent packet sniffing attacks.
+2. **Secure Session Management**: Implement secure methods for generating and handling session tokens, such as using randomly generated and sufficiently long session IDs.
+3. **Session Expiry and Invalidation**: Ensure sessions expire after a period of inactivity and are properly invalidated on user logout or session timeout.
+4. **HTTP Headers**: Utilize security headers like HTTP Strict Transport Security (HSTS) and secure cookies to enhance the security of session management.
+5. **Network Segmentation**: Segment networks to prevent unauthorized access and reduce the impact of MitM attacks.
+
+### What is IP Spoofing
+
+IP spoofing is a technique where an attacker impersonates another device or user by forging the source IP address in IP packets. This method can be exploited in various ways to launch attacks, manipulate data, or evade detection.
+
+**How IP Spoofing Happens:**
+
+IP spoofing can occur through several methods:
+
+1. **Raw Socket Programming**: Attackers use software that allows them to craft packets with arbitrary source IP addresses, bypassing normal IP stack restrictions.
+2. **Exploiting Weak Authentication**: In some cases, attackers can exploit systems with weak authentication mechanisms that rely solely on IP addresses for access control.
+3. **MitM Attacks**: In a Man-in-the-Middle (MitM) attack scenario, spoofing allows attackers to intercept and modify traffic between two parties by impersonating either the sender or the receiver.
+
+**Mitigation Strategies:**
+
+As a security engineer, here are key strategies to mitigate IP spoofing:
+
+1. **Implement Ingress Filtering**: Configure routers and firewalls to drop packets with spoofed source IP addresses using mechanisms like BCP38 (Network Ingress Filtering).
+2. **Use Strong Authentication**: Avoid relying solely on IP addresses for authentication purposes. Implement multi-factor authentication (MFA) and other robust authentication mechanisms.
+3. **Network Segmentation**: Segment networks to limit the impact of potential IP spoofing attacks and prevent lateral movement within the network.
+4. **Traffic Monitoring and Analysis**: Employ intrusion detection systems (IDS) and intrusion prevention systems (IPS) to detect anomalous traffic patterns indicative of IP spoofing or other malicious activities.
+5. **Encrypt Data in Transit**: Use encryption protocols such as TLS/SSL to protect data from being intercepted and manipulated in transit.
+
+### What is ClickJacking (UI Redressing)
+
+More info here: [https://portswigger.net/web-security/clickjacking#:~:text=Clickjacking is an interface-based,content in a decoy website](https://portswigger.net/web-security/clickjacking#:~:text=Clickjacking%20is%20an%20interface%2Dbased,content%20in%20a%20decoy%20website) and https://medium.com/@kaarthikeyenG/clickjacking-ui-redressing-999f33d34ebd
+
+Clickjacking is an interface-based attack in which a user is tricked into clicking on actionable content on a hidden website by clicking on some other content in a decoy website. This may lead the users to download malware, visit malicious web pages, provide credentials or sensitive information, transfer money, or purchase products online without their knowledge. Consider the following example:
+
+A web user accesses a decoy website (perhaps this is a link provided by an email) and clicks on a button to win a prize. Unknowingly, they have been deceived by an attacker into pressing an alternative hidden button and this results in the payment of an account on another site. This is an example of a clickjacking attack. The technique depends upon the incorporation of an invisible, actionable web page (or multiple pages) containing a button or hidden link, say, within an iframe. The iframe is overlaid on top of the user's anticipated decoy web page content. This attack differs from a [CSRF](https://portswigger.net/web-security/csrf) attack in that the user is required to perform an action such as a button click whereas a [CSRF attack](https://portswigger.net/web-security/csrf) depends upon forging an entire request without the user's knowledge or input.
+
+**Mitigation Strategies:**
+
+As a security engineer, consider these strategies to mitigate clickjacking:
+
+1. **Frame Busting Techniques**: Implement frame-busting JavaScript code that prevents your website from being framed by other sites.
+2. **X-Frame-Options Header**: Set the X-Frame-Options HTTP header to deny or limit framing of your website in other domains.
+3. **Content Security Policy (CSP)**: Use CSP to specify which domains are allowed to embed your content, reducing the risk of unauthorized framing.
+4. **UI Design Best Practices**: Design user interfaces that do not rely solely on visual cues for critical actions, such as requiring additional confirmation for sensitive operations.
+5. **Browser Security Enhancements**: Encourage users to keep their browsers updated with security patches that may include protections against clickjacking.
+6. **Education and Awareness**: Educate users about the risks of clickjacking and how to recognize suspicious behaviors or unexpected UI elements
+
+**Differences Between ClickJacking and CSRF attack**
+
+1. **Nature of Exploit**:
+    - **Clickjacking**: Exploits user interface deception. Users are tricked into clicking something they see but don't realize they are interacting with a hidden element.
+    - **CSRF**: Exploits web application trust in the user's browser. Users are tricked into making requests that perform actions without their knowledge.
+2. **User Interaction**:
+    - **Clickjacking**: Requires direct user interaction (e.g., clicking on a disguised element).
+    - **CSRF**: Does not require explicit user interaction with the target action. The malicious action is embedded in a URL or form that the user unknowingly triggers.
+3. **Protection Mechanisms**:
+    - **Clickjacking**:
+        - X-Frame-Options header (DENY, SAMEORIGIN, ALLOW-FROM).
+        - Content Security Policy (CSP) frame-ancestors directive.
+        - Frame-busting JavaScript.
+    - **CSRF**:
+        - Anti-CSRF tokens (unique tokens embedded in forms and verified by the server).
+        - SameSite cookie attribute to restrict cookie sending with cross-site requests.
+        - Checking the HTTP Referer header.
+4. **Typical Use Cases**:
+    - **Clickjacking**: Tricking users into liking a post, following someone on social media, or performing clicks that generate revenue.
+    - **CSRF**: Forcing users to change settings, submit forms, or initiate transactions on websites where they are authenticated.
+
+### What is CSRF Attack
+
+Ref and more info: https://portswigger.net/web-security/csrf
+Cross-site request forgery (also known as CSRF) is a web security vulnerability that allows an attacker to induce users to perform actions that they do not intend to perform. It allows an attacker to partly circumvent the same origin policy, which is designed to prevent different websites from interfering with each other.
+
+**What is the impact of a CSRF attack?**
+
+In a successful CSRF attack, the attacker causes the victim user to carry out an action unintentionally. For example, this might be to change the email address on their account, to change their password, or to make a funds transfer. Depending on the nature of the action, the attacker might be able to gain full control over the user's account. If the compromised user has a privileged role within the application, then the attacker might be able to take full control of all the application's data and functionality.
+
+**How does CSRF work?**
+
+For a CSRF attack to be possible, three key conditions must be in place:
+
+- **A relevant action.** There is an action within the application that the attacker has a reason to induce. This might be a privileged action (such as modifying permissions for other users) or any action on user-specific data (such as changing the user's own password).
+- **Cookie-based session handling.** Performing the action involves issuing one or more HTTP requests, and the application relies solely on session cookies to identify the user who has made the requests. There is no other mechanism in place for tracking sessions or validating user requests.
+- **No unpredictable request parameters.** The requests that perform the action do not contain any parameters whose values the attacker cannot determine or guess. For example, when causing a user to change their password, the function is not vulnerable if an attacker needs to know the value of the existing password.
+
+### What is SQLInjection, types and mitigation?
+
+Ref and moreinfo: https://portswigger.net/web-security/sql-injection
+
+SQL injection (SQLi) is a web security vulnerability that allows an attacker to interfere with the queries that an application makes to its database. This can allow an attacker to view data that they are not normally able to retrieve. This might include data that belongs to other users, or any other data that the application can access. In many cases, an attacker can modify or delete this data, causing persistent changes to the application's content or behavior.
+
+In some situations, an attacker can escalate a SQL injection attack to compromise the underlying server or other back-end infrastructure. It can also enable them to perform denial-of-service attacks.
+
+**Types of SQL Injection:**
+
+1. **Classic SQL Injection**:
+    - **Union-based SQL Injection**: Uses the UNION SQL operator to combine the results of two or more SELECT queries. In this way the attacker is able to add theri own commands to the commands run by the application.
+    - **Error-based SQL Injection**: Relies on database errors to retrieve information about the database structure.
+    - **Boolean-based Blind SQL Injection**: Uses conditional responses to infer information from the database.
+    - **Time-based Blind SQL Injection**: Uses time delays to infer information when the database does not return errors or messages.
+2. **Second-Order SQL Injection**:
+    - This occurs when malicious inputs are stored in the database and later used in SQL queries without proper sanitization.
+3. **Blind SQL Injection**:
+    - When the application does not return errors, attackers use indirect methods to infer database information (e.g., Boolean-based or time-based methods).
+4. **Out-of-Band SQL Injection**:
+    - Uses different channels (like DNS or HTTP) to extract data. It is less common but can be very effective if the database server can make outbound connections.
+
+**How SQL Injection Happens:**
+
+- **User Input Manipulation**: Attackers enter malicious SQL code into input fields (e.g., login forms, search boxes) that is then executed by the database server.
+- **HTTP GET/POST Parameters**: Attackers manipulate URL parameters or POST data to inject SQL commands.
+- **Cookies**: Malicious SQL code can be injected through cookies, exploiting applications that trust cookie values.
+- **HTTP Headers**: SQL injection can occur via manipulated HTTP headers like User-Agent or Referer.
+
+**Mitigation Strategies:**
+
+1. **Parameterized Queries (Prepared Statements)**:
+    - Use parameterized queries or prepared statements to ensure SQL code and data are separated, preventing attackers from injecting malicious SQL.
+2. **Stored Procedures**:
+    - Use stored procedures for database access instead of dynamic SQL queries.
+3. **ORMs (Object-Relational Mappers)**:
+    - Use ORMs that automatically handle query parameterization and minimize direct SQL query usage.
+4. **Input Validation and Sanitization**:
+    - Validate and sanitize all user inputs. Use whitelists to allow only acceptable input formats.
+5. **Escaping User Inputs**:
+    - Properly escape special characters in user inputs that will be used in SQL queries.
+6. **Least Privilege Principle**:
+    - Restrict database user privileges to the minimum required for the application. Avoid using administrative accounts for application access.
+7. **Web Application Firewalls (WAF)**:
+    - Implement WAFs to detect and block SQL injection attempts.
+8. **Regular Security Audits and Penetration Testing**:
+    - Perform regular security assessments to identify and remediate SQL injection vulnerabilities.
+9. **Error Handling**:
+    - Avoid displaying detailed error messages to users. Use generic error messages and log detailed errors on the server side.
+10. **Database Hardening**:
+    - Apply security patches and updates to the database server. Disable unnecessary features and services.
+
+**More explanation about Parameterized Queries (Prepared Statements)**:
+
+You can prevent most instances of SQL injection using **parameterized queries** **instead of string concatenation within the query**. These parameterized queries are also know as "**prepared statements**".
+
+The following code is vulnerable to SQL injection because the user input is concatenated directly into the query:
+
+```
+String query = "SELECT * FROM products WHERE category = '"+ input + "'";
+Statement statement = connection.createStatement();
+ResultSet resultSet = statement.executeQuery(query);
+```
+
+You can rewrite this code in a way that prevents the user input from interfering with the query structure:
+
+```
+PreparedStatement statement = connection.prepareStatement("SELECT * FROM products WHERE category = ?");
+statement.setString(1, input);
+ResultSet resultSet = statement.executeQuery();
+```
+
+In the safe example, **user inputs are passed as parameters to the query, not concatenated directly into the SQL string.** 
+
+Also these are the reson why in paramterised query, SQL Injection won’t happen:
+
+- **Separation of Code and Data**: The SQL query structure is predefined, and the user input is handled as a separate parameter. The input does not alter the query structure.
+- **Automatic Escaping**: The DB driver usually ensures that special characters in the input are properly escaped, so they are treated as literal strings rather than executable SQL code.
+
+**Most Famous Tool: SQLMap**
+
+SQLmap is an open-source penetration testing tool that automates the process of detecting and exploiting SQL injection flaws in web applications. It allows security professionals and penetration testers to test and exploit SQL injection vulnerabilities in various databases. It supports a wide range of database management systems and offers a variety of options to perform different types of SQL injection attacks.
+
+**Basic SQLmap Command**
+
+Here is a basic SQLmap command to test a URL for SQL injection:
+
+```bash
+sqlmap -u "http://example.com/vulnerable_page.php?id=1"
+```
+
+This command tests the URL parameter `id` on the specified page for SQL injection vulnerabilities.
+
+**Using SQLmap with Burp Suite**
+
+You can use Burp Suite to intercept HTTP requests and then pass those requests to SQLmap for testing. Here's how you can do it:
+
+1. **Intercept Request with Burp Suite**:
+    - Use Burp Suite's proxy to intercept a request.
+    - Right-click on the intercepted request and select "Copy to File" to save the request as a `.txt` file.
+2. **Test the Request with SQLmap**:
+    - Use the `r` option in SQLmap to specify the request file.
+
+**Example Command with SQLmap and Burp Suite**
+
+Assuming you saved the intercepted request from Burp Suite to a file named `request.txt`, here is how you would use SQLmap to test it:
+
+```bash
+sqlmap -r request.txt
+```
+
+This command tells SQLmap to read the HTTP request from `request.txt` and test it for SQL injection vulnerabilities.
+
+Here is a more detailed example of a SQLmap command with additional options:
+
+```bash
+sqlmap -r request.txt --batch --dbs
+```
+
+- `r request.txt`: Specifies the request file saved from Burp Suite.
+- `-batch`: Runs SQLmap in non-interactive mode, using default options for any prompts.
+- `-dbs`: Enumerates the databases on the target server if an injection point is found.
+
+### What is XSS attack and explain different types
+
+**Cross-Site Scripting (XSS)** is a web vulnerability that allows attackers to inject malicious scripts into web pages viewed by other users. These scripts can be used to steal information, impersonate users, or perform other malicious actions.
+
+**Types of XSS Attacks**
+
+1. **Stored XSS**:
+    - **Description**: The malicious script is stored on the server (e.g., in a database) and executed when users access the affected page.
+    - **Example**: An attacker submits a comment containing malicious JavaScript that executes every time someone views the comment.
+2. **Reflected XSS**:
+    - **Description**: The malicious script is reflected off the server in an immediate response, usually through a URL parameter or HTTP request.
+    - **Example**: An attacker crafts a URL with a malicious script as a parameter that is immediately executed by the application.
+3. **DOM-Based XSS**:
+    - **Description**: The vulnerability exists in the client-side code and is triggered when client-side scripts manipulate the DOM using untrusted data.
+    - **Example**: JavaScript code on a page uses `document.location` to insert data from the URL directly into the DOM without proper sanitization.
+
+**Technical Details**
+
+- **Payload Injection**: Attackers inject malicious payloads (JavaScript) into web applications via inputs like forms, URL parameters, or HTTP headers.
+- **Execution**: The injected script executes in the context of the victim's browser, often leading to theft of session cookies, credentials, or other sensitive information.
+
+**Mitigation Strategies**
+
+1. **Input Validation and Output Encoding**:
+    - **Description**: Validate and sanitize user input and encode data before displaying it on web pages.
+    - **Example**: Use functions like `htmlspecialchars` in PHP or `TextEncoder` in JavaScript.
+2. **Output Escaping** or E**scaping User Input**:
+    - **Description:** Escaping user input ensures that any potentially harmful characters (like `<`, `>`, and `&`) are converted to their corresponding HTML entities (`&lt;`, `&gt;`, and `&amp;`). This prevents the browser from interpreting these characters as executable code. By escaping data before rendering it on a web page, you ensure that any injected code is displayed as plain text rather than executed. This is essential for preventing XSS attacks.
+3. **Content Security Policy (CSP)**:
+    - **Description**: Implement CSP to control which sources of content can be loaded and executed by the browser.
+    - **Example**: Add the header `Content-Security-Policy: default-src 'self'` to restrict script execution.
+4. **HTTPOnly and Secure Cookies**:
+    - **Description**: Use HTTPOnly and Secure flags to protect cookies from being accessed or transmitted over non-HTTPS connections.
+    - **Example**: Set cookies with attributes `HttpOnly` and `Secure` to prevent JavaScript access.
+5. **Use Secure Libraries and Frameworks**:
+    - **Description**: Utilize libraries and frameworks that offer built-in XSS protections.
+    - **Example**: AngularJS automatically escapes data in templates to prevent XSS.
+
+### What is XXE Injection Attack
+
+Ref and more info: [https://portswigger.net/web-security/xxe#:~:text=XML external entity injection](https://portswigger.net/web-security/xxe#:~:text=XML%20external%20entity%20injection%20) (also,application's%20processing%20of%20XML%20data.
+
+**XML External Entity (XXE) Injection** is a web security vulnerability that allows an attacker to interfere with an application's processing of XML data. It often allows an attacker to view files on the application server filesystem, and to interact with any back-end or external systems that the application itself can access.
+
+In some situations, an attacker can escalate an XXE attack to compromise the underlying server or other back-end infrastructure, by leveraging the XXE vulnerability to perform [server-side request forgery](https://portswigger.net/web-security/ssrf) (SSRF) attacks.
+
+**How do XXE vulnerabilities arise?**
+
+Some applications use the XML format to transmit data between the browser and the server. Applications that do this virtually always use a standard library or platform API to process the XML data on the server. XXE vulnerabilities arise because the XML specification contains various potentially dangerous features, and standard parsers support these features even if they are not normally used by the application.
+
+**How XXE Injection Works**
+
+1. **XML Parsing**: The application parses XML data which may include external entities.
+2. **External Entities**: An attacker can craft an XML document with a reference to an external entity.
+3. **Entity Expansion**: The XML parser resolves these entities, potentially leading to unintended behavior or exposure of sensitive data.
+
+**Example of XXE Attack**
+
+Consider an XML parser configuration that allows external entities:
+
+```xml
+<!DOCTYPE foo [
+  <!ELEMENT foo ANY >
+  <!ENTITY xxe SYSTEM "file:///etc/passwd">
+]>
+<foo>&xxe;</foo>
+```
+
+If this XML is processed by an application with XXE vulnerability, the content of `/etc/passwd` (a sensitive file on Unix systems) could be exposed.
+
+**What are the types of XXE attacks?**
+
+There are various types of XXE attacks:
+
+- [Exploiting XXE to retrieve files](https://portswigger.net/web-security/xxe#exploiting-xxe-to-retrieve-files), where an external entity is defined containing the contents of a file, and returned in the application's response.
+- [Exploiting XXE to perform SSRF attacks](https://portswigger.net/web-security/xxe#exploiting-xxe-to-perform-ssrf-attacks), where an external entity is defined based on a URL to a back-end system.
+- [Exploiting blind XXE exfiltrate data out-of-band](https://portswigger.net/web-security/xxe/blind#exploiting-blind-xxe-to-exfiltrate-data-out-of-band), where sensitive data is transmitted from the application server to a system that the attacker controls.
+- [Exploiting blind XXE to retrieve data via error messages](https://portswigger.net/web-security/xxe/blind#exploiting-blind-xxe-to-retrieve-data-via-error-messages), where the attacker can trigger a parsing error message containing sensitive data.
+
+**Mitigation Strategies**
+
+1. **Disable External Entity Processing**: Configure XML parsers to disable external entity processing.
+    - Java Example:
+        
+        ```java
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        ```
+        
+    - Python Example:
+        
+        ```python
+        from lxml import etree
+        parser = etree.XMLParser(resolve_entities=False)
+        ```
+        
+2. **Use Safe Libraries**: Use libraries or frameworks that have secure defaults and avoid processing untrusted XML data.
+    - **Example**: Use modern libraries that handle XML securely or that abstract XML parsing to avoid direct handling of external entities.
+3. **Validate and Sanitize Input**: Ensure that XML input is properly validated and sanitized before processing.
+    - **Example**: Validate XML against a schema to enforce constraints and prevent malicious data.
+4. **Limit Parser Capabilities**: Restrict the XML parser’s capabilities to minimize the impact of a potential attack.
+    - **Example**: Disable features such as DTD processing if not required.
