@@ -327,3 +327,124 @@ There are various types of XXE attacks:
     - **Example**: Validate XML against a schema to enforce constraints and prevent malicious data.
 4. **Limit Parser Capabilities**: Restrict the XML parser’s capabilities to minimize the impact of a potential attack.
     - **Example**: Disable features such as DTD processing if not required.
+
+
+### What are SSTI and CSTI and differences
+
+More info: https://medium.com/@s_novoselov/ssti-csti-dont-waste-your-time-c6e9fbb20743
+
+***TL;DR:** SSTI allows **code execution on the remote server**, while CSTI enables the **execution of arbitrary JavaScript code on the victim’s side (Browser)**.*
+
+### **Server-Side Template Injection (SSTI)**
+
+**SSTI** occurs when user input is unsafely embedded in server-side templates, leading to code execution on the server. This happens in template engines that allow arbitrary code execution when rendering templates.
+
+**Why SSTI Happens**
+
+1. **Unsanitized User Input**: When user input is directly inserted into templates without proper sanitization or validation.
+2. **Insecure Template Engines**: Some template engines allow direct execution of code, making them vulnerable if user input is not handled correctly.
+3. **Improper Escaping**: Lack of or improper escaping of user input embedded in templates.
+
+**How to Prevent SSTI**
+
+1. **Sanitize Input**: Always sanitize and validate user input before using it in templates.
+2. **Use Safe Template Engines**: Choose template engines that do not allow code execution or use them in a secure mode.
+3. **Escape Output**: Properly escape all variables rendered in templates to avoid code execution.
+4. **Content Security Policy (CSP)**: Implement CSP to restrict the sources from which scripts can be executed.
+
+### Client-Side Template Injection (CSTI)
+
+**CSTI** occurs when user input is unsafely embedded in client-side templates, leading to code execution in the user's browser. This can happen with JavaScript templating engines.
+
+**Why CSTI Happens**
+
+1. **Unsanitized User Input**: Directly inserting user input into client-side templates without proper sanitization or validation.
+2. **Insecure Client-Side Template Engines**: Some client-side template engines allow arbitrary code execution.
+3. **Improper Escaping**: Failure to escape user input correctly in templates.
+
+**How to Prevent CSTI**
+
+1. **Sanitize Input**: Ensure user input is sanitized and validated before it is used in client-side templates.
+2. **Use Safe Template Engines**: Choose template engines that do not allow code execution or use them securely.
+3. **Escape Output**: Properly escape all variables rendered in client-side templates.
+4. **Content Security Policy (CSP)**: Implement CSP to restrict the sources from which scripts can be executed.
+
+**Comparison of SSTI and CSTI**
+
+| Feature | SSTI (Server-Side Template Injection) | CSTI (Client-Side Template Injection) |
+| --- | --- | --- |
+| Execution | Code execution on the server | Code execution in the client's browser |
+| Impact | Can lead to server compromise, data breach, DoS | Can lead to XSS, data theft, or other client-side attacks |
+| Common Engines | Jinja2 (Python), ERB (Ruby), Twig (PHP), etc. | Handlebars, Mustache, AngularJS, React, Vue, etc. |
+| Detection | Server logs, unusual server behavior | Browser behavior, client-side errors |
+| Prevention | Sanitize inputs, use safe engines, escape output | Sanitize inputs, use safe engines, escape output |
+
+**Example of SSTI**
+
+Vulnerable Code (Python/Jinja2):
+
+```python
+from flask import Flask, request, render_template_string
+
+app = Flask(__name__)
+
+@app.route('/greet')
+def greet():
+    name = request.args.get('name')
+    template = f"Hello, {name}!"
+    return render_template_string(template)
+
+if __name__ == '__main__':
+    app.run()
+```
+
+Exploit:
+
+```arduino
+http://example.com/greet?name={{7*7}}
+```
+
+This would render `Hello, 49!`, demonstrating code execution.
+
+Prevention:
+
+```python
+from flask import Flask, request, render_template_string
+from markupsafe import escape
+
+app = Flask(__name__)
+
+@app.route('/greet')
+def greet():
+    name = request.args.get('name')
+    template = f"Hello, {escape(name)}!"
+    return render_template_string(template)
+
+if __name__ == '__main__':
+    app.run()
+```
+
+**Example of CSTI**
+
+Vulnerable Code (JavaScript/Handlebars):
+
+```jsx
+var template = Handlebars.compile("Hello, {{name}}!");
+var context = { name: userInput };
+var html = template(context);
+document.getElementById('content').innerHTML = html;
+```
+
+Exploit:
+If `userInput` contains `{{alert('XSS')}}`, it will execute an alert.
+
+Prevention:
+
+```jsx
+var template = Handlebars.compile("Hello, {{name}}!");
+var context = { name: Handlebars.Utils.escapeExpression(userInput) };
+var html = template(context);
+document.getElementById('content').innerHTML = html;
+```
+
+Both SSTI and CSTI involve the injection of malicious code into templates. SSTI impacts the server, leading to severe security breaches, while CSTI impacts the client, often resulting in XSS attacks. Prevention in both cases involves sanitizing input, using safe template engines, and properly escaping output.
