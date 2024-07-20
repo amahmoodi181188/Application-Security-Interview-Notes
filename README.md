@@ -20,5 +20,6 @@ You are probabely will be asked about these topics like what are these, definiti
 - **Network Based Questions**: https://github.com/amahmoodi181188/Application-Security-Interview-Notes/blob/main/Network-Based-Questions
 - **Definition Of Important Vulnerabilities**: https://github.com/amahmoodi181188/Application-Security-Interview-Notes/blob/main/Important-Vulnerabilities
 - **Definition of Important Attacks**: https://github.com/amahmoodi181188/Application-Security-Interview-Notes/blob/main/Important-Attacks
+- **API Explanation**: https://github.com/amahmoodi181188/Application-Security-Interview-Notes/blob/main/API
 
 Thank you!
