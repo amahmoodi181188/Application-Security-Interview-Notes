@@ -1,0 +1,84 @@
+## 
+
+### What are CSP Headers? Explain their applications, challenges, …
+
+More Info: https://content-security-policy.com/
+
+- **What:** Security mechanism to mitigate certain types of attacks, primarily Cross-Site Scripting (XSS) by controlling resource loading (scripts, styles, etc.) **origins**. Any resource not explicitly allowed by the policy will be blocked.
+- **Benefits:** Reduced XSS risk, improved performance, better security posture.
+- **Implementation:** There are two ways to implement CSP: 1- **HTTP Headers:** Add a `Content-Security-Policy` header to your web server's response. This is the preferred method. 2- **HTML Meta Tag:** Use a `<meta>` tag with the `content-security-policy` attribute within the `<head>` section of your HTML file. This method offers less flexibility and is considered less secure.
+- **Directives and Values:** The CSP header consists of directives and values that define the allowed resources. Here are some common directives:
+    - **script-src:** Specifies allowed script origins (e.g., `script-src 'self' https://cdn.example.com`)
+    - **style-src:** Specifies allowed stylesheet origins (e.g., `style-src 'self' https://fonts.googleapis.com`)
+    - **img-src:** Specifies allowed image origins (e.g., `img-src 'self' https://cdn.example.com data:`)
+    - **frame-ancestors:** Specifies allowed origins for framing your website (e.g., `frame-ancestors 'self'`)
+- **Challenges of Implementation:**
+    - **Identifying Resources:** Identifying all necessary resources and their origins can be time-consuming, especially for complex websites.
+    - **Third-Party Dependencies:** Many websites rely on third-party scripts, styles, and images. You need to ensure these resources are allowed by your CSP.
+    - **Content Management Systems (CMS):** Some CMS platforms might inject inline styles or scripts, causing conflicts with your CSP.
+- **unsafe-inline:**
+    
+    The `unsafe-inline` keyword allows inline scripts (scripts embedded within HTML tags) and inline styles (styles defined within the `<style>` tag). While convenient, it bypasses the security checks of CSP and increases the risk of XSS attacks.
+    
+    **Fixing unsafe-inline:**
+    
+    - **Refactor Code:** Move inline scripts and styles to separate external files and reference them using the appropriate CSP directives.
+    - Use Nonces (unique random values per script, The server must generate a unique nonce value each time it transmits a policy) or Hashing (unique script content hash) in CSP to prevent unauthorized execution.
+    - **Report-Only Mode:** Implement CSP in "report-only" mode first to identify issues with inline scripts and styles before enforcing a strict policy.
+
+
+### What is CORS header and how does it work?
+
+**CORS (Cross-Origin Resource Sharing)** is a mechanism that allows web servers to control which origins are permitted to access resources on the server. It is implemented through HTTP headers that instruct browsers on how to handle cross-origin requests.
+
+**How CORS Works**
+
+1. **Preflight Requests**:
+    - For certain types of requests (e.g., those with non-simple methods like PUT or DELETE, or custom headers), the browser sends an HTTP OPTIONS request to the server to check if the actual request is safe to send.
+    - The server responds with CORS headers indicating whether the request is allowed.
+2. **Simple Requests**:
+    - For simple GET or POST requests without custom headers, the browser automatically includes the Origin header in the request.
+    - The server responds with CORS headers if the request is allowed.
+
+**Key CORS Headers**:
+
+- `Access-Control-Allow-Origin`: Specifies which origins are permitted (e.g., `` for all origins, or a specific origin like `https://example.com`).
+- `Access-Control-Allow-Methods`: Specifies which HTTP methods are allowed (e.g., GET, POST, PUT).
+- `Access-Control-Allow-Headers`: Specifies which headers can be used in the actual request.
+- `Access-Control-Allow-Credentials`: Indicates whether credentials (cookies, HTTP authentication) are allowed.
+- `Access-Control-Max-Age`: Specifies how long the results of a preflight request can be cached.
+
+**Applications of CORS**
+
+- **Web APIs**: Allowing web applications hosted on different origins to access API endpoints.
+- **Web Fonts**: Enabling web fonts to be loaded from different origins.
+- **Third-Party Services**: Allowing web applications to interact with third-party services hosted on different domains.
+
+**Same-Origin Policy (SOP)**
+
+**SOP (Same-Origin Policy)** is a security feature implemented in browsers to restrict how documents or scripts loaded from one origin can interact with resources from another origin. An origin is defined by the combination of the scheme (protocol), host (domain), and port.
+
+**SOP Restrictions**:
+
+- JavaScript can only make requests to the same origin unless explicitly allowed by CORS.
+- Cookies, local storage, and other browser-based storage are isolated by origin.
+
+**Differences Between CORS and SOP**
+
+- **SOP**: Enforces strict isolation between different origins to prevent malicious interactions.
+- **CORS**: Provides a controlled way to relax SOP by allowing specified cross-origin requests.
+
+**Why CORS is Needed Despite SOP**
+
+SOP alone would prevent all cross-origin requests, severely limiting the ability of web applications to integrate with third-party services and APIs. CORS provides a standardized way for servers to permit legitimate cross-origin requests while maintaining security. **In a nutshell with using CORS headers we can customise SOP restricts and also control origin for everywhere ( not limited to web applications which is loaded through browsers (like APIs))**
+
+**Security Misconfigurations of CORS**
+
+- **Wildcard (`*`) in `Access-Control-Allow-Origin`**:
+    - Allows any origin to access the resource, potentially exposing sensitive data.
+- **Allowing Credentials with Wildcard**:
+    - Combining `Access-Control-Allow-Origin: *` with `Access-Control-Allow-Credentials: true` is invalid and insecure, as it opens up cross-origin attacks.
+- **Overly Permissive Methods and Headers**:
+    - Allowing too many methods and headers can increase the attack surface.
+- **Ignoring Preflight Requests**:
+    - Not properly handling preflight requests can result in unintended exposure of resources.
