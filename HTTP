@@ -1,0 +1,97 @@
+## **Understanding HTTP Requests: Structure, Methods, …**
+
+Ref and more info: https://www.linode.com/docs/guides/http-get-request/, https://medium.com/@adilrk/http-request-and-response-e7da8eb3a00c, https://www.w3schools.com/tags/ref_httpmethods.asp, 
+
+HTTP requests are messages  formatted in the HTTP protocol that are sent from a client to a server that is capable of to responding to them. An HTTP request uses a sentence-like structure, allowing the application making the request in the HTTP client to ask, answer, and acknowledge information. HTTP server messages are structured in a similar way and can have different types of responses to a given HTTP Request.
+
+In HTTP1.1, requests are formed in ASCII, while HTTP/2 uses binary. Servers that only understand HTTP1.1 may bounce or ignore requests sent in HTTP/2. Meanwhile, HTTP/2 servers are backward-compatible and understand HTTP1.1 requests by default.
+
+HTTP requests can be formed by software, APIs, or libraries within an application (e.g. web browsers and email clients). They target a specific server with a URL/URI. Different HTTP requests produce different server reactions and HTTP responses.
+
+The syntax of an HTTP request is a rather sentence-like structure. A noun (data values expressed in the message header, options chosen, and body message values) is coupled with a verb (the HTTP request method used, such as GET or POST) to form the complete message.
+
+The format of an HTTP request is qualified by a header. It contains an HTTP request method, a target URL/URI, and a target server endpoint path. Optional components of an HTTP request include a body, header, a query string, and the HTTP Protocol Version (HTTP1.1, or HTTP/2).
+
+HTTP GET and POST are the two most commonly used HTTP methods to exchange information between a client and a server. Other methods include PUT, PATCH, DELETE, CONNECT, and TRACE.
+
+**HTTP Methods and Descriptions:**
+
+| Method Name | Description |
+| --- | --- |
+| OPTIONS | Request for communication options that are available on the request/response chain. |
+| GET | Request to retrieve information from server using a given URI. |
+| HEAD | Identical to GET except that it does not return a message-body, only the headers and status line. |
+| POST | Request for server to accept the entity enclosed in the body of HTTP method. |
+| DELETE | Request for the Server to delete the resource. |
+| CONNECT | Reserved for use with a proxy that can switch to being a tunnel. |
+| PUT | This is same as POST, but POST is used to create, PUT can be used to create as well as update. It replaces all current representations of the target resource with the uploaded content. |
+| PATCH | partially updates a specified resource |
+| TRACE | echoes the received request back to the client, for debugging purposes |
+
+### GET vs. POST method
+
+The difference between the GET and the POST method is the most common question in the interviews. Let us see some main points that differentiate both these methods.
+
+| GET | POST |
+| --- | --- |
+| Data goes through the header | Data flows through the request body |
+| The size of data is limited to 255 characters | No limit on the size of data |
+| Since the data passes through the URL, it becomes insecure | Data is secure since it is not exposed |
+| GET requests wait for the response of the previous request before sending the next request | The POST request does not wait for a successful response from the previous request before hitting the next one. |
+| Can be cached | It cannot cache. |
+| Can be bookmarked | It cannot bookmark. |
+| Better in performance as compared to POST since the values append to the URL by default | Less efficient in performance as compared to GET as we spend some time on including request body values in the POST request |
+| Only string data type is allowed | No restriction on data type |
+| Parameters get stored in browser history | Parameters don’t get stored in browser history |
+| No impact on data if we hit the reload button. | The form data reset if we hit the reload button. |
+| Uses application/x-www-form-urlencoded encoding | Uses application/x-www-form-urlencoded or multipart/form-data for binary data |
+
+### What is the structure of an HTTP Response?
+
+By looking at the various status codes, we can understand the response from the server. However, the HTTP Response not only contains the response status code but some other components as well. We will discuss them in this section. The composition of HTTP Response looks like this-
+
+1. *Status Line*
+2. *Zero or more headers*
+3. *An optional message body*
+
+**Status Line**
+
+The status line in an HTTP response consists of 3 parts-
+
+- *HTTP Protocol Version*
+- *Status Code*
+- *Reason Phrase*
+
+It is the first line in the response section. In addition to that, below is the Status-Line for the response we received to our request.
+
+**HTTP Protocol Version**
+
+As already discussed in the previous post, the HTTP protocol version specifies the message format along with the sender’s ability to understand further communication. Similar to the HTTP request, the HTTP protocol version in the response is 1.1.
+
+**Status Code**
+
+Every HTTP response comes with a status code. Moreover, this status code is a 3-digit integer value. The first digit represents the class of the response. Moreover, the last 2 digits do not have any categorical value. There are five distinct values that the first digit of the status code can take. In our example, the status code is 200. But that is not the only status code your response may come with. Additionally, the below table summarizes the different status codes you might come across.
+
+- *1xx: Informational: It means the request was received and the process is continuing.*
+- *22xx: Success: It means the action received was successful, understandable, and acceptable.*
+- *33xx: Redirection: This means further action must be taken to complete the request.*
+- *44xx: Client Error: It means the request contains incorrect syntax or cannot fulfill.*
+- *55xx: Server Error: It means the server failed to fulfill/ complete an apparently valid request.*
+
+**Reason Phrase**
+
+Reason phrase gives/ provides a short textual description of the status code. It is like a status text that resonates with the status code. In our example, the reason phrase is OK.
+
+**Response Header**
+
+A response header is similar to the request header, which consists of additional information about the response. Additionally, a response may have 0 or more headers, but it is highly unlikely to have zero response headers. Moreover, the response headers are present after the status line and before the response body. 
+
+Let’s briefly discuss the different response headers-
+
+- ***Server:**describes the software of the origin server*
+- ***Content-Type:**depicts the type of content the response holds. In our example, its value **application/JSON; charset=utf-8** means that the response is in the form of JSON. Additionally, the client should interpret it in the same manner.*
+- ***Content-Length:** defines the length of the data, i.e., the number of bytes in the response body.*
+
+**Response Body**
+
+The response body consists of the resource data requested by the client. In our example, we requested the book’s data, and the response body consists of the different books present in the database along with their information.
