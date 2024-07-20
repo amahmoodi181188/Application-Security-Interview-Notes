@@ -125,3 +125,375 @@ To further enhance security, websites can be included in the HSTS preload list, 
 1. Set the HSTS header with the `preload` directive.
 2. Ensure your site and all its subdomains are HTTPS-enabled.
 3. Submit your site to the [HSTS preload list](https://hstspreload.org/).
+
+
+
+### What is HPKP
+
+**HTTP Public Key Pinning (HPKP)** is a security mechanism that allows HTTPS websites to resist impersonation by attackers using misissued or otherwise fraudulent certificates. HPKP lets web administrators specify which public keys (or their hashes) are valid for a specific website, adding an additional layer of security on top of traditional certificate validation.
+
+**How HPKP Works**
+
+1. **HPKP Header**:
+    - When a browser receives an HPKP header from a website, it stores the policy and enforces it for the specified duration.
+    - The HPKP header includes directives such as the public key hashes that should be trusted, the max age for which the policy is valid, and whether the policy should apply to subdomains.
+
+**Example of an HPKP header**:
+
+```
+Public-Key-Pins: pin-sha256="base64+primaryPublicKey="; pin-sha256="base64+backupPublicKey="; max-age=5184000; includeSubDomains
+```
+
+- `pin-sha256`: Specifies the base64-encoded SHA-256 hash of a trusted public key.
+- `max-age`: The duration (in seconds) for which the browser should remember the policy (e.g., 5184000 seconds = 60 days).
+- `includeSubDomains`: Indicates that the policy also applies to all subdomains of the site.
+
+**Why HPKP Was Used**
+
+HPKP aimed to prevent Man-in-the-Middle (MitM) attacks where an attacker could exploit a Certificate Authority (CA) to issue a fraudulent certificate for a domain. By "pinning" a website's public key, browsers would only accept connections to the website if the server's certificate chain includes one of the pinned public keys.
+
+**How to Prevent Issues with HPKP**
+
+1. **Backup Keys**: Always specify backup keys to prevent accidental lockout in case the primary key is lost or compromised.
+2. **Short Max-Age for Testing**: Start with a short `max-age` during the initial testing phase to minimize the risk of long-term lockout.
+3. **Monitor HPKP Reports**: Implement reporting URIs to monitor any potential issues or violations.
+
+**Deprecation of HPKP**
+
+Due to the complexity and risk of misconfiguration (leading to potential site lockout), HPKP is now deprecated and not recommended for use. Many browsers have removed support for HPKP. Instead, Certificate Transparency (CT) and the use of Certificate Authority Authorization (CAA) DNS records are now preferred methods for enhancing HTTPS security.
+
+**Summary**
+
+- **HPKP** was designed to enhance HTTPS security by "pinning" public keys to a website.
+- **Mechanism**: It uses an HTTP header to specify which public keys are trusted.
+- **Risk**: Misconfiguration can lead to site lockout, and thus it is deprecated.
+- **Current Best Practices**: Use Certificate Transparency (CT) and Certificate Authority Authorization (CAA) instead of HPKP for securing HTTPS connections.
+
+
+### X-Frame-Options Header
+
+**X-Frame-Options** is an HTTP response header that provides clickjacking protection by controlling whether a web page can be displayed within an `iframe` or similar HTML elements. This header allows website administrators to specify whether their site should be allowed to be framed and, if so, by whom.
+
+**How X-Frame-Options Works**
+
+The X-Frame-Options header has three directives:
+
+1. **DENY**: Prevents the page from being displayed in an `iframe` or `frame` no matter where the request originates.
+    
+    ```
+    X-Frame-Options: DENY
+    ```
+    
+2. **SAMEORIGIN**: Allows the page to be framed only by pages on the same origin.
+    
+    ```
+    X-Frame-Options: SAMEORIGIN
+    ```
+    
+3. **ALLOW-FROM uri**: Allows the page to be framed only by a specific origin. This directive is less commonly supported and may not be implemented in all browsers.
+    
+    ```
+    X-Frame-Options: ALLOW-FROM https://example.com
+    ```
+    
+
+**Why X-Frame-Options Is Important**
+
+- **Clickjacking Protection**: Clickjacking is an attack where a user is tricked into clicking on something different from what the user perceives, potentially revealing confidential information or taking control of their computer while clicking on seemingly harmless web pages.
+- **Preventing Phishing and Fraud**: By ensuring that your site cannot be embedded in a malicious website, you reduce the risk of users being deceived into performing unintended actions.
+
+**Security Misconfiguration of X-Frame-Options**
+
+- **Omission**: Not setting the X-Frame-Options header can leave a website vulnerable to clickjacking attacks.
+- **Incorrect Directive**: Using an inappropriate directive (e.g., using `ALLOW-FROM` with multiple origins) can reduce the effectiveness of the protection.
+- **Legacy Browsers**: Some older browsers may not fully support all directives, especially `ALLOW-FROM`. It’s important to consider the compatibility with your user base.
+
+**Difference Between X-Frame-Options and Content Security Policy (CSP) Frame Ancestors**
+
+- **X-Frame-Options**: Simple to implement and widely supported but limited to `DENY`, `SAMEORIGIN`, and `ALLOW-FROM` directives.
+- **Content Security Policy (CSP) frame-ancestors Directive**: More flexible and modern alternative that allows specifying multiple allowed origins and uses a more granular approach.
+
+**Example of CSP frame-ancestors**:
+
+```
+Content-Security-Policy: frame-ancestors 'self' https://example.com
+```
+
+
+### X-XSS-Protection Header
+
+**X-XSS-Protection** is an HTTP response header that enables the Cross-Site Scripting (XSS) filter built into most modern web browsers. It provides an additional layer of security to help prevent XSS attacks, which occur when an attacker injects malicious scripts into content from otherwise trusted websites.
+
+**How X-XSS-Protection Works**
+
+The X-XSS-Protection header has the following directives:
+
+1. **0**: Disables the XSS filter.
+    
+    ```
+    X-XSS-Protection: 0
+    ```
+    
+2. **1**: Enables the XSS filter.
+    
+    ```
+    X-XSS-Protection: 1
+    ```
+    
+3. **1; mode=block**: Enables the XSS filter and instructs the browser to block the response if an attack is detected, rather than sanitizing the script.
+    
+    ```
+    X-XSS-Protection: 1; mode=block
+    ```
+    
+4. **1; report=<reporting-URI>**: Enables the XSS filter and instructs the browser to sanitize the page and send a report of the detected XSS attack to the specified URI.
+    
+    ```
+    X-XSS-Protection: 1; report=https://example.com/report-xss
+    ```
+    
+
+**Why X-XSS-Protection Is Important**
+
+- **Protection Against XSS Attacks**: XSS attacks can steal cookies, session tokens, or other sensitive information, deface websites, or redirect users to malicious sites. The X-XSS-Protection header helps mitigate these attacks by leveraging the browser's built-in XSS filter.
+- **Browser Support**: Most modern browsers, including Internet Explorer, Chrome, and Safari, support the X-XSS-Protection header, making it a widely applicable security measure.
+
+**Security Misconfiguration of X-XSS-Protection**
+
+- **Disabling the Filter**: Setting `X-XSS-Protection: 0` disables the XSS filter, which should only be done if you have other robust XSS protections in place and are confident that your application is secure.
+- **Legacy Browsers**: Some older browsers may not support the `mode=block` or `report` directives, limiting the effectiveness of the header.
+
+**Modern Alternatives**
+
+While X-XSS-Protection provides a basic level of XSS protection, it is not foolproof. Modern web security practices recommend using **Content Security Policy (CSP)** to provide a more comprehensive defense against XSS attacks. CSP allows you to specify which sources of content are considered safe, thereby preventing the execution of malicious scripts.
+
+
+
+### X-Content-Type-Options Header
+
+It is an HTTP response header used to **protect against MIME type sniffing vulnerabilities**. It helps ensure that browsers adhere to the declared `Content-Type` of a resource, thereby preventing them from interpreting files as different types than intended, which can be exploited in certain attacks.
+
+**How X-Content-Type-Options Works**
+
+The X-Content-Type-Options header has one directive:
+
+- **nosniff**: This directive tells the browser not to perform MIME type sniffing and to trust the `Content-Type` declared by the server.
+
+```
+X-Content-Type-Options: nosniff
+```
+
+**Why X-Content-Type-Options Is Important**
+
+- **Prevent MIME Type Sniffing**: Browsers sometimes try to guess the MIME type of a resource. For example, if a server mistakenly serves a script file with the wrong `Content-Type`, a browser might execute it as JavaScript if it guesses the type based on the content.
+- **Mitigate XSS and Download Injection Attacks**: By enforcing the declared `Content-Type`, this header helps prevent malicious files from being interpreted and executed in a way that could exploit the user or the application.
+
+**Example of X-Content-Type-Options Implementation**
+
+Apache Configuration:
+
+```
+Header set X-Content-Type-Options "nosniff"
+```
+
+Nginx Configuration:
+
+```
+add_header X-Content-Type-Options "nosniff";
+```
+
+Express.js Configuration:
+
+```jsx
+const express = require('express');
+const helmet = require('helmet');
+
+const app = express();
+app.use(helmet.noSniff());
+
+app.get('/', (req, res) => {
+    res.send('X-Content-Type-Options header is set!');
+});
+
+app.listen(3000, () => {
+    console.log('Server running on port 3000');
+});
+```
+
+**Security Misconfiguration of X-Content-Type-Options**
+
+- **Omission**: Not setting the X-Content-Type-Options header can leave a website vulnerable to **MIME type sniffing attacks**.
+- **Incorrect Use**: This header should always be used with the `nosniff` directive, as it has no other valid directives.
+
+**Related Security Practices**
+
+- **Set Correct Content-Type**: Always serve resources with the appropriate `Content-Type` header to inform browsers of the intended content type.
+- **Content Security Policy (CSP)**: Use CSP to further restrict the types of content that can be loaded and executed by the browser.
+- **Secure Headers**: Use other security headers like `X-Frame-Options`, `X-XSS-Protection`, and `Strict-Transport-Security` (HSTS) to enhance overall security.
+
+**Summary**
+
+**X-Content-Type-Options** is an HTTP header that instructs browsers to respect the MIME types declared by the server and not to attempt to guess the content type. It is crucial for preventing MIME type sniffing attacks, which can lead to security vulnerabilities such as XSS and download injection attacks. Implementing this header is a simple yet effective way to enhance the security of your web application.
+
+
+### What is Referrer-Policy Header
+
+**Referrer-Policy** is an HTTP header that controls how much referrer information (i.e., the URL of the page making the request) is included with requests made from your site. This header helps improve privacy and security by restricting the amount of information shared with other sites.
+
+**How Referrer-Policy Works**
+
+The `Referrer-Policy` header can have several directives, each specifying different levels of referrer information sharing:
+
+1. **no-referrer**: No referrer information is sent with requests.
+    
+    ```
+    Referrer-Policy: no-referrer
+    ```
+    
+2. **no-referrer-when-downgrade**: Referrer is sent to the same protocol (HTTPS to HTTPS) but not when downgrading (HTTPS to HTTP).
+    
+    ```
+    Referrer-Policy: no-referrer-when-downgrade
+    ```
+    
+3. **same-origin**: Referrer is sent only to requests to the same origin.
+    
+    ```
+    Referrer-Policy: same-origin
+    ```
+    
+4. **origin**: Only the origin (scheme, host, and port) is sent as the referrer.
+    
+    ```
+    Referrer-Policy: origin
+    ```
+    
+5. **strict-origin**: Only the origin is sent and only over secure connections.
+    
+    ```
+    Referrer-Policy: strict-origin
+    ```
+    
+6. **origin-when-cross-origin**: Full URL referrer for same-origin requests, only origin for cross-origin requests.
+    
+    ```
+    Referrer-Policy: origin-when-cross-origin
+    ```
+    
+7. **strict-origin-when-cross-origin**: Full URL for same-origin, origin for cross-origin over HTTPS, no referrer for downgrades.
+    
+    ```
+    Referrer-Policy: strict-origin-when-cross-origin
+    ```
+    
+8. **unsafe-url**: Full URL referrer is sent with all requests, regardless of security.
+    
+    ```
+    Referrer-Policy: unsafe-url
+    ```
+    
+
+**Why Referrer-Policy Is Important**
+
+- **Privacy Protection**: Controls how much of the URL (and potentially sensitive information) is shared with third-party sites.
+- **Security Enhancement**: Reduces the risk of leaking sensitive information contained in URLs to external sites.
+- **Compliance**: Helps ensure compliance with privacy regulations by minimizing unnecessary data sharing.
+
+**Security Misconfiguration of Referrer-Policy**
+
+- **Inappropriate Level of Referrer Information**: Choosing a policy like `unsafe-url` can lead to excessive information sharing, potentially leaking sensitive information.
+- **Omission**: Not setting a `Referrer-Policy` header at all leaves the default browser behavior, which may not align with your security and privacy requirements.
+
+**Related Security Practices**
+
+- **Minimize URL Information**: Avoid putting sensitive information in URLs, as this can be inadvertently shared through referrer headers.
+- **Use HTTPS**: Ensure all site content is served over HTTPS to prevent referrer information leakage through protocol downgrades.
+- **Secure Headers**: Implement other security headers such as `X-Content-Type-Options`, `X-Frame-Options`, `Content-Security-Policy`, and `Strict-Transport-Security` to further enhance site security.
+
+**Summary**
+
+**Referrer-Policy** is an HTTP header that controls the amount of referrer information sent with requests, helping to protect user privacy and enhance security. By choosing an appropriate directive, you can control how much of the URL from the referring page is shared with other sites, ensuring sensitive information is not inadvertently leaked. Implementing this header is a key part of a comprehensive security strategy for modern web applications.
+
+
+
+### Set-Cookie Header
+
+The **Set-Cookie** header is used in HTTP responses to send cookies from the server to the user's browser. Cookies are used to store data such as user preferences, session tokens, and other information that needs to be persisted across multiple requests.
+
+**How Set-Cookie Works**
+
+The `Set-Cookie` header includes various attributes that control the behavior and scope of the cookie. Here’s a breakdown of its components:
+
+Basic Example:
+
+```
+Set-Cookie: sessionId=abc123; Path=/; Secure; HttpOnly; SameSite=Strict
+```
+
+**Attributes of the Set-Cookie Header**
+
+1. **Name=Value**: The cookie's name and value.
+    
+    ```
+    Set-Cookie: sessionId=abc123
+    ```
+    
+2. **Expires**: Sets the expiration date for the cookie. If not set, the cookie is a session cookie and will be deleted when the browser is closed.
+    
+    ```
+    Set-Cookie: sessionId=abc123; Expires=Wed, 21 Oct 2024 07:28:00 GMT
+    ```
+    
+3. **Max-Age**: Specifies the maximum age of the cookie in seconds. After this period, the cookie is deleted.
+    
+    ```
+    Set-Cookie: sessionId=abc123; Max-Age=3600
+    ```
+    
+4. **Domain**: Specifies the domain for which the cookie is valid. Subdomains are included if specified.
+    
+    ```
+    Set-Cookie: sessionId=abc123; Domain=example.com
+    ```
+    
+5. **Path**: Defines the URL path for which the cookie is valid. The browser will send the cookie only when requesting resources from this path.
+    
+    ```
+    Set-Cookie: sessionId=abc123; Path=/secure
+    ```
+    
+6. **Secure**: Indicates that the cookie should only be sent over secure (HTTPS) connections.
+    
+    ```
+    Set-Cookie: sessionId=abc123; Secure
+    ```
+    
+7. **HttpOnly**: Prevents the cookie from being accessed via JavaScript (document.cookie), mitigating the risk of cross-site scripting (XSS) attacks.
+    
+    ```
+    Set-Cookie: sessionId=abc123; HttpOnly
+    ```
+    
+8. **SameSite**: Controls whether the cookie is sent with cross-site requests to mitigate CSRF attacks. Possible values are `Lax`, `Strict`, and `None`.
+    
+    ```
+    Set-Cookie: sessionId=abc123; SameSite=Strict
+    ```
+    
+    - **Strict**: The browser sends the cookie only for same-site requests (that is, requests originating from the same site that set the cookie). If the request originated from a different URL than the current one, no cookies with the `SameSite=Strict` attribute are sent.
+    - **Lax**: The cookie is not sent on cross-site requests, such as calls to load images or frames, but is sent when a user is navigating to the origin site from an external site (e.g. if following a link). This is the default behavior if the SameSite attribute is not specified.
+    - **None**: The browser sends the cookie with both cross-site and same-site requests. The Secure attribute must also be set when `SameSite=None`!
+
+**Why Set-Cookie Is Important**
+
+- **Session Management**: Cookies are commonly used to manage user sessions, storing session IDs and other session-specific information.
+- **Personalization**: Cookies help store user preferences and settings, providing a personalized experience.
+- **Security**: Proper use of cookie attributes enhances security by protecting against common web vulnerabilities like XSS and CSRF.
+
+**Security Misconfiguration of Set-Cookie**
+
+- **Omission of HttpOnly**: Leaving out the `HttpOnly` attribute can expose cookies to XSS attacks.
+- **Omission of Secure**: Not using the `Secure` attribute allows cookies to be sent over unencrypted connections.
+- **Improper SameSite Setting**: Incorrect `SameSite` settings can leave applications vulnerable to CSRF attacks.
+
+
