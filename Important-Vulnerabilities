@@ -522,3 +522,95 @@ GET /fetch?url=http://localhost/admin
 5. **Monitoring and Logging**:
     - Monitor and log all outbound requests made by the server.
     - Set up alerts for unusual or unauthorized outbound traffic patterns.
+
+
+
+**HTTP Parameter Pollution (HPP)** is a web security vulnerability that occurs when an attacker manipulates or injects multiple instances of the same HTTP parameter in a single request, potentially altering the behavior of web applications. This can lead to unexpected and potentially malicious outcomes.
+
+**How HPP Works**
+
+1. **Multiple Parameters**:
+    - HPP exploits the way web applications handle multiple instances of the same parameter. For example, a URL might contain `?user=alice&user=bob`.
+    - Different web frameworks handle these duplicates differently. Some may take the first value, others the last, and some might merge the values into an array.
+2. **Example**:
+    - Consider an application that processes user input from a URL query string:
+        
+        ```arduino
+        https://example.com/profile?user=alice&role=admin
+        ```
+        
+    - An attacker could add another `user` parameter:
+        
+        ```sql
+        https://example.com/profile?user=alice&user=bob&role=admin
+        ```
+        
+3. **Effect on Application Logic**:
+    - The application's behavior can change based on which parameter value it processes, potentially leading to unauthorized actions, bypassing security checks, or triggering unexpected application behavior.
+
+**Applications and Exploits**
+
+- **Access Control Bypass**: An attacker might manipulate parameters to gain unauthorized access or escalate privileges.
+- **SQL Injection and XSS**: If the application uses user input in database queries or renders it in the browser without proper sanitization, HPP can facilitate SQL Injection or Cross-Site Scripting (XSS) attacks.
+- **Business Logic Manipulation**: Changing parameters might affect the application's business logic, leading to incorrect processing or data leakage.
+
+**Example of HPP Attack**
+
+Vulnerable Application:
+
+```jsx
+const express = require('express');
+const app = express();
+
+app.get('/profile', (req, res) => {
+    const user = req.query.user;
+    const role = req.query.role;
+    if (role === 'admin') {
+        // Show admin panel
+        res.send(`Welcome admin ${user}`);
+    } else {
+        // Show user profile
+        res.send(`Welcome user ${user}`);
+    }
+});
+
+app.listen(3000, () => {
+    console.log('Server running on port 3000');
+});
+```
+
+HPP Exploit:
+
+- Request: `https://example.com/profile?user=alice&user=bob&role=admin`
+- Potential Outcome: Depending on how the server processes the parameters, `user=bob` might be used with `role=admin`, granting admin access to `bob`.
+
+**Mitigation Strategies**
+
+1. **Input Validation and Sanitization**:
+    - Validate and sanitize all incoming parameters to ensure they meet expected formats and values.
+    - Use allow-lists to only permit known and safe parameters.
+2. **Consistent Parameter Handling**:
+    - Ensure that the application consistently handles multiple instances of the same parameter. Decide whether to use the first occurrence, last occurrence, or reject requests with duplicate parameters.
+3. **Framework Configuration**:
+    - Configure web frameworks to handle multiple parameters safely and consistently.
+    - Some frameworks offer configuration options to control how duplicate parameters are processed.
+4. **Security Testing**:
+    - Regularly test the application for HPP vulnerabilities using automated tools and manual testing techniques.
+    - Implement a security review process to identify and fix potential HPP issues.
+
+**Example of Mitigation**
+
+Express.js Middleware to Handle Duplicates:
+
+```jsx
+app.use((req, res, next) => {
+    const params = req.query;
+    for (const key in params) {
+        if (Array.isArray(params[key])) {
+            // Handle duplicates, e.g., take the first value
+            req.query[key] = params[key][0];
+        }
+    }
+    next();
+});
+```
