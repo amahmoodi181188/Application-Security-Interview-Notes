@@ -23,5 +23,6 @@ You are probabely will be asked about these topics like what are these, definiti
 - **API Explanation**: https://github.com/amahmoodi181188/Application-Security-Interview-Notes/blob/main/API
 - **Understanding HTTP Requests: Structure, Methods, …** : https://github.com/amahmoodi181188/Application-Security-Interview-Notes/blob/main/HTTP
 - **Other General Questions** are listed here: https://github.com/amahmoodi181188/Application-Security-Interview-Notes/blob/main/Other-General-Questions
+-  **OWASP TOP 10**- as it is necessary dat ayou need to be master for successful interview: https://github.com/amahmoodi181188/Application-Security-Interview-Notes/blob/main/OWASP-Top10
 
 Thank you!
