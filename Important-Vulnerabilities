@@ -715,3 +715,84 @@ For measures you can take to prevent specific vulnerabilities, please refer to t
 **DOM clobbering**
 
 DOM clobbering is an advanced technique in which you inject HTML into a page to manipulate the DOM and ultimately change the behavior of JavaScript on the website. The most common form of DOM clobbering uses an anchor element to overwrite a global variable, which is then used by the application in an unsafe way, such as generating a dynamic script URL.
+
+
+
+### Mass Assignment Vulnerability
+
+Mass assignment vulnerability occurs when an application automatically binds user input to program objects without properly filtering or validating the inputs. This can result in unauthorized changes to sensitive attributes within the object, leading to security breaches.
+
+**How It Works**
+
+In many web frameworks, developers can use features that automatically bind HTTP request parameters to model attributes. This is convenient but can be dangerous if not properly controlled. For instance, consider a user model with attributes such as `name`, `email`, and `isAdmin`. If an attacker can manipulate the request parameters to include `isAdmin=true`, and the application blindly assigns all parameters to the user object, the attacker could escalate their privileges.
+
+**Example Scenario**:
+
+1. **Normal User Registration Form**:
+    - Fields: `name`, `email`, `password`
+    - User submits: `name=John&email=john@example.com&password=secret`
+2. **Malicious User Submission**:
+    - Fields: `name`, `email`, `password`, `isAdmin`
+    - Attacker submits: `name=John&email=john@example.com&password=secret&isAdmin=true`
+
+If the application blindly maps all input parameters to the user model, the `isAdmin` attribute could be set to `true`, giving the attacker admin privileges.
+
+**Mitigation Strategies**
+
+1. **Strong Parameter Filtering**: Explicitly define which parameters are allowed to be mass-assigned. This can be done using mechanisms provided by the web framework (e.g., strong parameters in Ruby on Rails).
+    
+    ```ruby
+    # Example in Ruby on Rails
+    def user_params
+      params.require(:user).permit(:name, :email, :password)
+    end
+    ```
+    
+2. **Attribute Whitelisting/Blacklisting**: Only allow certain attributes to be mass-assigned and ensure sensitive attributes are protected.
+    
+    ```python
+    # Example in Python
+    class User:
+        def __init__(self, name, email, password):
+            self.name = name
+            self.email = email
+            self.password = password
+            self.isAdmin = False  # Cannot be set via mass assignment
+    ```
+    
+3. **Custom Access Control Logic**: Implement custom logic to check and set sensitive attributes separately, rather than relying on automatic binding.
+    
+    ```jsx
+    // Example in Node.js/Express
+    app.post('/register', function(req, res) {
+        const { name, email, password } = req.body;
+        const user = new User({ name, email, password });
+        user.isAdmin = false; // Explicitly set or validate sensitive attributes
+        user.save();
+    });
+    ```
+    
+4. **Input Validation and Sanitization**: Validate and sanitize all inputs to ensure they conform to expected formats and values. Use validation libraries and frameworks to enforce input rules.
+    
+    ```java
+    // Example in Java with Spring
+    @PostMapping("/register")
+    public String registerUser(@RequestBody UserDto userDto) {
+        User user = new User();
+        user.setName(userDto.getName());
+        user.setEmail(userDto.getEmail());
+        user.setPassword(userDto.getPassword());
+        user.setIsAdmin(false); // Ensure this is not set from user input
+        userService.save(user);
+        return "User registered successfully";
+    }
+    ```
+    
+
+**Conclusion**
+
+Mass assignment vulnerabilities can lead to severe security breaches if not properly mitigated. By employing strong parameter filtering, whitelisting, custom access control logic, and thorough input validation, developers can protect their applications from such attacks. Ensuring only the intended attributes are set from user input is crucial in maintaining the security and integrity of the application.
+
+
+
+
