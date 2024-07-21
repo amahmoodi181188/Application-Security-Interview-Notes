@@ -1,0 +1,201 @@
+It is necessary to review and be aware of OWASP Top 10 definition and details in case of any quesitons. We already have different Top 10 for different purposes like Web Applications, API, Mobile or probably for Cloud and Embedded systems. Its important to review the main OWASP page of each before Interview session.
+these are the main resources we need to follow for testing:
+
+- https://owasp.org/www-project-top-ten/
+- https://owasp.org/www-project-api-security/ and https://owasp.org/API-Security/editions/2023/en/0x11-t10/
+- https://owasp.org/www-project-mobile-top-10/
+
+But just for having some short notes I ask ChatGPT to explain these three shortly here.
+
+### OWASP Web Top 10
+
+The OWASP (Open Web Application Security Project) Top 10 is a list of the most critical security risks to web applications. Here’s a simple explanation of each risk and how you can test for them:
+
+### 1. **Broken Access Control**
+
+- **Explanation**: When users can act outside of their intended permissions.
+- **Testing**: Attempt to access parts of the application that should be restricted (e.g., accessing admin pages as a regular user).
+
+### 2. **Cryptographic Failures**
+
+- **Explanation**: Issues related to cryptography (e.g., sensitive data exposure).
+- **Testing**: Check if sensitive data (like passwords, credit card numbers) are transmitted in plaintext or weakly encrypted.
+
+### 3. **Injection**
+
+- **Explanation**: Flaws that allow untrusted data to be executed as commands or queries (e.g., SQL Injection).
+- **Testing**: Use tools like SQLmap to inject SQL queries into input fields and observe if unauthorized data access occurs.
+
+### 4. **Insecure Design**
+
+- **Explanation**: Inherent weaknesses in the application’s architecture.
+- **Testing**: Review the design and architecture for flaws that could be exploited, such as insufficient segregation of duties.
+
+### 5. **Security Misconfiguration**
+
+- **Explanation**: Incorrect settings or configurations that expose the application to vulnerabilities.
+- **Testing**: Use tools like OWASP ZAP or Burp Suite to scan for common misconfigurations, such as default accounts, unnecessary services, and verbose error messages.
+
+### 6. **Vulnerable and Outdated Components**
+
+- **Explanation**: Use of components with known vulnerabilities.
+- **Testing**: Run dependency check tools like OWASP Dependency-Check to identify outdated libraries and components.
+
+### 7. **Identification and Authentication Failures**
+
+- **Explanation**: Issues with user authentication and session management.
+- **Testing**: Test for weak password policies, insufficient account lockout mechanisms, and session management flaws (e.g., session fixation).
+
+### 8. **Software and Data Integrity Failures**
+
+- **Explanation**: Unauthorized data or software manipulation (e.g., through CI/CD pipelines).
+- **Testing**: Check the integrity of code and data through code reviews and ensuring the integrity of deployed software with tools like Snyk.
+
+### 9. **Security Logging and Monitoring Failures**
+
+- **Explanation**: Insufficient logging and monitoring, leading to undetected breaches.
+- **Testing**: Verify that all critical actions are logged, and logs are monitored and reviewed regularly. Tools like ELK Stack (Elasticsearch, Logstash, Kibana) can be used for log monitoring.
+
+### 10. **Server-Side Request Forgery (SSRF)**
+
+- **Explanation**: When an attacker forces a server to make requests to an unintended location.
+- **Testing**: Use tools like Burp Suite to craft requests that force the server to access internal systems or external malicious sites.
+
+### OWASP API Top 10
+
+The OWASP API Security Top 10 focuses on the most critical security risks specific to APIs (Application Programming Interfaces). Here’s a simple explanation of each risk and how you can test for them:
+
+### 1. **Broken Object Level Authorization**
+
+- **Explanation**: Improper access controls allow users to manipulate object references to access unauthorized data.
+- **Testing**: Try to access objects (like user accounts) that should belong to other users by manipulating object IDs in API requests.
+
+### 2. **Broken Authentication**
+
+- **Explanation**: Weaknesses in authentication mechanisms allow attackers to compromise user accounts.
+- **Testing**: Test for weak password policies, lack of multi-factor authentication (MFA), and improper session handling.
+
+### 3. **Excessive Data Exposure**
+
+- **Explanation**: APIs expose more data than necessary, relying on clients to filter the data.
+- **Testing**: Review API responses to ensure they don’t expose sensitive data. Use tools to inspect API responses for unnecessary data.
+
+### 4. **Lack of Resources & Rate Limiting**
+
+- **Explanation**: Absence of rate limiting allows attackers to perform denial-of-service (DoS) attacks.
+- **Testing**: Perform high-volume requests to check if the API has rate limiting and throttling mechanisms in place.
+
+### 5. **Broken Function Level Authorization**
+
+- **Explanation**: Inadequate authorization checks allow users to access functionality that they shouldn't have access to.
+- **Testing**: Try accessing administrative endpoints or performing administrative actions as a regular user.
+
+### 6. **Mass Assignment**
+
+- **Explanation**: Automatically binding input from client to object properties without proper filtering, allowing attackers to modify object properties.
+- **Testing**: Send unexpected fields in API requests to see if they are accepted and applied to the objects.
+
+### 7. **Security Misconfiguration**
+
+- **Explanation**: Insecure settings or configurations in the API infrastructure.
+- **Testing**: Use tools to scan for common misconfigurations, such as exposed endpoints, unnecessary services, and default credentials.
+
+### 8. **Injection**
+
+- **Explanation**: Injection flaws like SQL, NoSQL, and command injection.
+- **Testing**: Use tools like SQLmap to test for SQL injection and other injection flaws by injecting malicious payloads in API requests.
+
+### 9. **Improper Assets Management**
+
+- **Explanation**: Lack of documentation and control over API endpoints and versions.
+- **Testing**: Enumerate API endpoints and versions to check for outdated or undocumented endpoints that could be exploited.
+
+### 10. **Insufficient Logging & Monitoring**
+
+- **Explanation**: Failure to log and monitor API activities, making it hard to detect and respond to attacks.
+- **Testing**: Verify that API actions are properly logged and that logs are monitored for suspicious activity.
+
+### Tools for Testing OWASP API Security Top 10:
+
+1. **Burp Suite**: Comprehensive tool for testing web security, including APIs.
+2. **OWASP ZAP (Zed Attack Proxy)**: An open-source tool for finding security vulnerabilities in web applications and APIs.
+3. **Postman**: A tool for API testing that can help inspect responses and check for excessive data exposure.
+4. **SQLmap**: Automated tool for detecting SQL injection vulnerabilities.
+5. **Fuzzing Tools**: Tools like OWASP Amass or wfuzz can be used to test for input validation issues.
+6. **Rate Limiting Testing**: Custom scripts or tools like Apache JMeter to simulate high-volume API requests.
+7. **Nmap**: Network scanner to detect open ports and services that might be misconfigured.
+8. **Logging Tools**: ELK Stack (Elasticsearch, Logstash, Kibana) for monitoring and analyzing logs.
+
+### 
+
+### OWASP Mobile Top 10
+
+The OWASP Mobile Top 10 lists the most critical security risks for mobile applications. Here’s a simple explanation of each risk and how you can test for them:
+
+### **1. Improper Platform Usage**
+
+- **Explanation**: Misuse of a platform feature or failure to use platform security controls.
+- **Testing**: Review the application code and permissions. Use tools like Android Lint or Checkmarx.
+
+### 2. **Insecure Data Storage**
+
+- **Explanation**: Storing sensitive data insecurely on the device.
+- **Testing**: Inspect local storage, databases, and cache. Use tools like MobSF (Mobile Security Framework) and Drozer.
+
+### 3. **Insecure Communication**
+
+- **Explanation**: Failure to secure network traffic, allowing data interception.
+- **Testing**: Capture network traffic using tools like Wireshark or OWASP ZAP to see if sensitive data is transmitted in plaintext.
+
+### 4. **Insecure Authentication**
+
+- **Explanation**: Inadequate authentication mechanisms.
+- **Testing**: Test login and authentication processes for weaknesses, such as missing multi-factor authentication. Tools like OWASP Mobile Security Testing Guide (MSTG) can be helpful.
+
+### 5. **Insufficient Cryptography**
+
+- **Explanation**: Weak or improperly implemented cryptographic techniques.
+- **Testing**: Analyze how the app handles encryption. Use tools like Rips or manual code review to ensure proper cryptographic practices.
+
+### 6. **Insecure Authorization**
+
+- **Explanation**: Failure to enforce proper authorization, allowing unauthorized actions.
+- **Testing**: Try accessing restricted areas or functionalities as a regular user. Tools like Postman or Burp Suite can assist in modifying requests.
+
+### 7. **Client Code Quality**
+
+- **Explanation**: Poor coding practices leading to vulnerabilities.
+- **Testing**: Perform static and dynamic analysis using tools like SonarQube or MobSF to find coding errors.
+
+### 8. **Code Tampering**
+
+- **Explanation**: Application code is tampered with or altered.
+- **Testing**: Check for code integrity checks and anti-tampering mechanisms. Use tools like Dex2jar, APKTool, and Integrity Checker.
+
+### 9. **Reverse Engineering**
+
+- **Explanation**: Attackers reverse engineer the application to find vulnerabilities or extract sensitive data.
+- **Testing**: Attempt to decompile and analyze the app using tools like JD-GUI, APKTool, and MobSF.
+
+### 10. **Extraneous Functionality**
+
+- **Explanation**: Unintended functionalities that are not part of the application's official feature set but can be exploited.
+- **Testing**: Review the application for hidden features, debug code, or backdoors. Tools like JADX and manual code review can be helpful.
+
+### Tools for Testing OWASP Mobile Top 10:
+
+1. **MobSF (Mobile Security Framework)**: An all-in-one tool for automated mobile application security testing.
+2. **Drozer**: A comprehensive security audit and attack framework for Android.
+3. **Wireshark**: Network protocol analyzer for capturing and analyzing network traffic.
+4. **OWASP ZAP (Zed Attack Proxy)**: A tool for finding security vulnerabilities in web applications and mobile backend services.
+5. **Postman**: A collaboration platform for API development that can be used for testing mobile app APIs.
+6. **Burp Suite**: A powerful web vulnerability scanner that can also test mobile app communications.
+7. **Android Lint**: A static analysis tool for Android to detect potential bugs and optimization improvements.
+8. **Checkmarx**: A static application security testing tool to find vulnerabilities in source code.
+9. **SonarQube**: An open-source platform for continuous inspection of code quality.
+10. **JD-GUI, APKTool, JADX**: Tools for decompiling and reverse engineering Android applications.
+
+### Summary
+
+Testing for the OWASP Mobile Top 10 involves a combination of static analysis, dynamic analysis, and manual testing. Using the right tools and following a structured approach can help identify and mitigate the most critical security risks in mobile applications. Regular testing and secure coding practices are essential for maintaining robust mobile app security.
+
